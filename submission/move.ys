@@ -1,0 +1,88 @@
+# Stack starts here and grows to lower addresses
+    .pos 0x1000
+stack:
+    .quad 0x0
+
+# Execution begins at address 0 
+    .pos 0x0
+    irmovq stack, %rsp      # Set up stack pointer
+    call main       # Execute main program
+    halt            # Terminate program 
+
+# an array of 9 elements
+# again, positioned absolutely
+    .pos 0x100
+array:
+    .quad 0x000000001
+    .quad 0x000000020
+    .quad 0x000000300
+# a pointer to the fourth element here
+arrayp3:
+    .quad 0x000004000
+    .quad 0x000050000
+    .quad 0x000600000
+    .quad 0x007000000
+    .quad 0x080000000
+    .quad 0x900000000
+
+main:
+    irmovq arrayp3, %rdi
+    irmovq array, %rsi
+    irmovq $5, %rdx
+    call move        # sum(array, 4)
+    ret
+
+#long move(long *dst, const long *src, long len)
+#
+# dst -> rdi, src -> rsi, len -> rdx, checksum -> rax
+# step -> r8, elem_size = 8, tmp -> r10
+# *src -> r11
+move:
+    irmovq $0, %rax
+    irmovq $8, %r8
+    rrmovq %rdi, %r10
+    subq %rsi, %r10
+    jle loop
+    rrmovq %rdx, %r10
+    addq %r10, %r10
+    addq %r10, %r10
+    addq %r10, %r10
+    addq %r10, %r10
+    addq %r10, %r10
+    addq %r10, %r10
+    addq %r10, %r10
+    addq %rsi, %r10
+    subq %rdi, %r10
+    jle loop
+    rrmovq %rdx, %r10
+    iaddq $-1, %r10 
+    addq %r10, %rdi
+    addq %r10, %rdi
+    addq %r10, %rdi
+    addq %r10, %rdi
+    addq %r10, %rdi
+    addq %r10, %rdi
+    addq %r10, %rdi
+    addq %r10, %rdi
+    addq %r10, %rsi
+    addq %r10, %rsi
+    addq %r10, %rsi
+    addq %r10, %rsi
+    addq %r10, %rsi
+    addq %r10, %rsi
+    addq %r10, %rsi
+    addq %r10, %rsi
+    irmovq $-8, %r8
+loop:
+    andq %rdx, %rdx
+    jle done
+loopiter:
+    mrmovq (%rsi), %r11
+    xorq %r11, %rax
+    addq %r8, %rdi
+    addq %r8, %rsi
+    iaddq $-1, %rdx
+    jmp loop
+done:
+    ret
+

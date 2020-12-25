@@ -1,0 +1,66 @@
+# Stack starts here and grows to lower addresses
+    .pos 0x1000
+stack:
+    .quad 0x0
+
+# Execution begins at address 0 
+    .pos 0x0
+    irmovq stack, %rsp      # Set up stack pointer
+    call main       # Execute main program
+    halt            # Terminate program 
+
+    .pos 0x100
+ele0:
+    .quad 0x0000a
+    .quad ele1
+ele1:
+    .quad 0x000b0
+    .quad ele2
+ele2:
+    .quad 0x00c00
+    .quad ele3
+ele3:
+    .quad 0x0d000
+    .quad ele4
+ele4:
+    .quad 0xe0000
+    .quad 0
+
+main:
+    irmovq ele0, %rdi
+    call rrev        # sum(array, 4)
+    ret
+
+#struct list *rrev(struct list *head)
+rrev:
+    andq %rdi, %rdi
+    je L1
+    rrmovq %rdi, %r10
+    iaddq $8, %r10
+    mrmovq (%r10),  %r8
+    andq %r8, %r8
+    je L1
+    rrmovq %rdi, %rbx
+    rrmovq %r8, %rdi
+    pushq %r8
+    pushq %r9
+    pushq %r10
+    pushq %r11
+    pushq %rbx
+    call rrev
+    popq %rbx
+    popq %r11
+    popq %r10
+    popq %r9
+    popq %r8
+    rrmovq %r8, %r9
+    iaddq $8, %r9
+    rmmovq %rbx, (%r9)
+    irmovq $0, %r11
+    rmmovq %r11, (%r10)
+    jmp done
+L1:
+    rrmovq %rdi, %rax
+done:
+    ret
+
