@@ -86,7 +86,6 @@ loop10pro:
 	iaddq $-10, %rdx
 	jge loop10
 tabler:
-	iaddq $10, %rdx
 	addq %rdx, %rdx
 	addq %rdx, %rdx
 	addq %rdx, %rdx
@@ -96,7 +95,6 @@ tabler:
 	pushq %rcx
 	ret
 
-jumptable:
 	.quad Done
 	.quad loop1
 	.quad loop2
@@ -107,6 +105,8 @@ jumptable:
 	.quad loop7
 	.quad loop8
 	.quad loop9
+jumptable:
+	
 
 loop9:
 	mrmovq 0x40(%rdi), %r10
