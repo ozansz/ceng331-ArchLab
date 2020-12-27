@@ -3,9 +3,16 @@
 # ncopy.ys - Copy a src block of len words to dst.
 # Return the number of positive words (>0) contained in src.
 #
-# Include your name and ID here.
-#
-# Describe how and why you modified the baseline code.
+# Ozan Sazak
+# 2310456
+# 
+# 1. Implemented Duff's Device (https://en.wikipedia.org/wiki/Duff%27s_device) with 10x loop unrolling (More than 10 was passing the 1000 byte size limits).
+# 2. Separated mrmovq and rmmovq instructions that using same registers to prevent data hazards.
+# 3. My Duff's Device implementation first does the bulk unroll part and then the remainder part. This way i've decreased the CPI of my code.
+# 4. Used a jump table to jump to the accurate remainder part. This is calculated at the "tabler" tag, and then pushes the address to the stack and uses ret instruction to simulate jmpq.
+# 5. Preloading the next remainder's memory data in the one before to cope with data hazards. Also loading loop1 and loop2's data in remainder calculation to prevent any further data hazard.
+# 6. Used iaddq instead of addq but then it caused my code to pass the 1000 byte size limit. Then allocated %rbx as constant 1 and used it to increment %rax by one (value > 0), this way my code size decreased to ~940 bytes
+# 7. Tried to change the value > 0 tests with bit-hacking to decrease jumps and extra bubbles bu it didn't work.
 #
 ##################################################################
 # Do not modify this portion
@@ -109,57 +116,57 @@ jumptable:
 	
 
 loop9:
-	mrmovq 0x40(%rdi), %r10
-	mrmovq 0x38(%rdi), %r11
-	andq %r10, %r10
-	rmmovq %r10, 0x40(%rsi) 
+	mrmovq 0x40(%rdi), %r8
+	mrmovq 0x38(%rdi), %r9
+	andq %r8, %r8
+	rmmovq %r8, 0x40(%rsi) 
 	jle loop8actual
 	addq %rbx, %rax
 loop8:
-	mrmovq 0x38(%rdi), %r11
+	mrmovq 0x38(%rdi), %r9
 loop8actual:
-	mrmovq 0x30(%rdi), %r10
-	andq %r11, %r11
-	rmmovq %r11, 0x38(%rsi) 
+	mrmovq 0x30(%rdi), %r8
+	andq %r9, %r9
+	rmmovq %r9, 0x38(%rsi) 
 	jle loop7actual
 	addq %rbx, %rax
 loop7:
-	mrmovq 0x30(%rdi), %r10
+	mrmovq 0x30(%rdi), %r8
 loop7actual:
-	mrmovq 0x28(%rdi), %r11
-	andq %r10, %r10
-	rmmovq %r10, 0x30(%rsi) 
+	mrmovq 0x28(%rdi), %r9
+	andq %r8, %r8
+	rmmovq %r8, 0x30(%rsi) 
 	jle loop6actual
 	addq %rbx, %rax
 loop6:
-	mrmovq 0x28(%rdi), %r11
+	mrmovq 0x28(%rdi), %r9
 loop6actual:
-	mrmovq 0x20(%rdi), %r10
-	andq %r11, %r11
-	rmmovq %r11, 0x28(%rsi) 
+	mrmovq 0x20(%rdi), %r8
+	andq %r9, %r9
+	rmmovq %r9, 0x28(%rsi) 
 	jle loop5actual
 	addq %rbx, %rax
 loop5:
-	mrmovq 0x20(%rdi), %r10
+	mrmovq 0x20(%rdi), %r8
 loop5actual:
-	mrmovq 0x18(%rdi), %r11
-	andq %r10, %r10
-	rmmovq %r10, 0x20(%rsi) 
+	mrmovq 0x18(%rdi), %r9
+	andq %r8, %r8
+	rmmovq %r8, 0x20(%rsi) 
 	jle loop4actual
 	addq %rbx, %rax
 loop4:
-	mrmovq 0x18(%rdi), %r11
+	mrmovq 0x18(%rdi), %r9
 loop4actual:
-	mrmovq 0x10(%rdi), %r10
-	andq %r11, %r11
-	rmmovq %r11, 0x18(%rsi) 
+	mrmovq 0x10(%rdi), %r8
+	andq %r9, %r9
+	rmmovq %r9, 0x18(%rsi) 
 	jle loop3actual
 	addq %rbx, %rax
 loop3:
-	mrmovq 0x10(%rdi), %r10
+	mrmovq 0x10(%rdi), %r8
 loop3actual:
-	andq %r10, %r10
-	rmmovq %r10, 0x10(%rsi) 
+	andq %r8, %r8
+	rmmovq %r8, 0x10(%rsi) 
 	jle loop2
 	addq %rbx, %rax
 loop2:
