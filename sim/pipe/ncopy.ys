@@ -111,65 +111,65 @@ jumptable:
 loop9:
 	mrmovq 0x40(%rdi), %r10
 	mrmovq 0x38(%rdi), %r11
-	rmmovq %r10, 0x40(%rsi) 
 	andq %r10, %r10
+	rmmovq %r10, 0x40(%rsi) 
 	jle loop8actual
 	addq %rbx, %rax
 loop8:
 	mrmovq 0x38(%rdi), %r11
 loop8actual:
 	mrmovq 0x30(%rdi), %r10
-	rmmovq %r11, 0x38(%rsi) 
 	andq %r11, %r11
+	rmmovq %r11, 0x38(%rsi) 
 	jle loop7actual
 	addq %rbx, %rax
 loop7:
 	mrmovq 0x30(%rdi), %r10
 loop7actual:
 	mrmovq 0x28(%rdi), %r11
-	rmmovq %r10, 0x30(%rsi) 
 	andq %r10, %r10
+	rmmovq %r10, 0x30(%rsi) 
 	jle loop6actual
 	addq %rbx, %rax
 loop6:
 	mrmovq 0x28(%rdi), %r11
 loop6actual:
 	mrmovq 0x20(%rdi), %r10
-	rmmovq %r11, 0x28(%rsi) 
 	andq %r11, %r11
+	rmmovq %r11, 0x28(%rsi) 
 	jle loop5actual
 	addq %rbx, %rax
 loop5:
 	mrmovq 0x20(%rdi), %r10
 loop5actual:
 	mrmovq 0x18(%rdi), %r11
-	rmmovq %r10, 0x20(%rsi) 
 	andq %r10, %r10
+	rmmovq %r10, 0x20(%rsi) 
 	jle loop4actual
 	addq %rbx, %rax
 loop4:
 	mrmovq 0x18(%rdi), %r11
 loop4actual:
 	mrmovq 0x10(%rdi), %r10
-	rmmovq %r11, 0x18(%rsi) 
 	andq %r11, %r11
+	rmmovq %r11, 0x18(%rsi) 
 	jle loop3actual
 	addq %rbx, %rax
 loop3:
 	mrmovq 0x10(%rdi), %r10
 loop3actual:
-	rmmovq %r10, 0x10(%rsi) 
 	andq %r10, %r10
+	rmmovq %r10, 0x10(%rsi) 
 	jle loop2
 	addq %rbx, %rax
 loop2:
-	rmmovq %r14, 0x8(%rsi) 
 	andq %r14, %r14
+	rmmovq %r14, 0x8(%rsi) 
 	jle loop1
 	addq %rbx, %rax
 loop1:
-	rmmovq %r13, (%rsi) 
 	andq %r13, %r13
+	rmmovq %r13, (%rsi) 
 	jle Done
 	addq %rbx, %rax
 ##################################################################
